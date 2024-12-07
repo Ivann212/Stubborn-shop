@@ -44,6 +44,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $deliveryAddress;
 
+    public function __construct()
+    {
+        // Attribuer le rôle par défaut ROLE_USER lors de la création de l'utilisateur
+        $this->role = 'ROLE_USER';
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,14 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         // By default, every user has the ROLE_USER role
-        $roles = ['ROLE_USER'];
-        
-        // You can add more roles depending on the user's permissions, for example:
-        if ($this->role === 'admin') {
-            $roles[] = 'ROLE_ADMIN';
-        }
-        
-        return $roles;
+        return ['ROLE_USER'];
     }
 
     /**

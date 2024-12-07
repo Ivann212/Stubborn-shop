@@ -4,19 +4,19 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationType;
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class RegisterController extends AbstractController
 {
     /**
      * @Route("/register", name="app_register")
      */
-    public function index(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function index(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
         // Créer un nouvel utilisateur
         $user = new User();
@@ -30,11 +30,13 @@ class RegisterController extends AbstractController
         // Vérifier si le formulaire est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
             // Encoder le mot de passe
-            $encodedPassword = $passwordEncoder->encodePassword($user, $user->getPassword());
+            $encodedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($encodedPassword);
 
+            // Définir le rôle par défaut à ROLE_USER
+            $user->setRole('ROLE_USER');
+
             // Sauvegarder l'utilisateur en base de données
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 

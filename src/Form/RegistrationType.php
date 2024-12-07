@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Email;
 
 class RegistrationType extends AbstractType
 {
@@ -24,7 +26,10 @@ class RegistrationType extends AbstractType
                 ],
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email',
+                'constraints' => [
+                    new NotBlank(),
+                    new Email(),
+                ],
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
