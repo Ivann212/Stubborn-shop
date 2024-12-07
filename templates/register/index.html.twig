@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/RegisterForm.css') }}">
+{% endblock %}
+
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Inscription</h1>
+
+        {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_row(form.nema) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.email) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.deliveryAddress) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.password) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.submit) }}
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+
+
