@@ -9,14 +9,16 @@
     <div class="login-container">
         <h1>Connexion</h1>
 
-        {{ form_start(form) }}
+        <form method="post">
             {{ form_row(form.email) }}
             {{ form_row(form.password) }}
             <button type="submit" class="btn btn-primary">Se connecter</button>
-        {{ form_end(form) }}
+        </form>
 
         
         
     </div>
-{% endblock %}
+    
+   
+    {% endblock %}
 

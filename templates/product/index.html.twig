@@ -9,7 +9,12 @@
         {% for product in products %}
             <li>
                 <a href="{{ path('app_product_show', {'id': product.id}) }}">
-                    {{ product.name }} - {{ product.price }} €
+                    <strong>{{ product.name }}</strong> - {{ product.price }} €
+                    {% if product.image %}
+                        <img src="{{ asset('uploads/' ~ product.image) }}" alt="{{ product.name }}" width="100">
+                    {% else %}
+                        <p>Aucune image disponible</p>
+                    {% endif %}
                 </a>
             </li>
         {% else %}
@@ -17,4 +22,3 @@
         {% endfor %}
     </ul>
 {% endblock %}
-

@@ -38,6 +38,20 @@ class ProductRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    /**
+     * Retourne les produits marqués comme "isFeatured".
+     *
+     * @return Product[] Returns an array of featured Product objects
+     */
+    public function findFeaturedProducts(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.isFeatured = :featured')
+            ->setParameter('featured', true)
+            ->orderBy('p.id', 'DESC') // Trier par ID, changer selon les besoins
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return Product[] Returns an array of Product objects
@@ -64,3 +78,4 @@ class ProductRepository extends ServiceEntityRepository
 //        ;
 //    }
 }
+

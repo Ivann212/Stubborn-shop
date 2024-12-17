@@ -11,7 +11,13 @@
         {{ form_row(formAdd.price) }}
         {{ form_row(formAdd.image) }}
         {{ form_row(formAdd.isFeatured) }}
-        {{ form_row(formAdd.stock) }}
+
+        <h3>Tailles et Stocks</h3>
+        <div id="sizes-container">
+            {{ form_row(formAdd.sizes) }}  {# Affichage de la collection des tailles #}
+        </div>
+
+        <button type="button" id="add-size" class="btn btn-primary">Ajouter une taille</button>
         {{ form_row(formAdd.submit) }}
     {{ form_end(formAdd) }}
 
@@ -22,9 +28,9 @@
                 <th>ID</th>
                 <th>Nom</th>
                 <th>Prix</th>
-                <th>Image</th>
-                <th>En avant ?</th>
+                <th>Taille</th>
                 <th>Stock</th>
+                <th>Image</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -32,21 +38,72 @@
             {% for product in products %}
                 <tr>
                     <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price }} €</td>
                     <td>
-                        {{ form_start(formEdit[product.id]) }}
-                        {{ form_row(formEdit[product.id].name) }}
+                        <ul>
+                            {% for size in product.sizes %}
+                                <li>{{ size.size }}: </li>
+                            {% else %}
+                                <li>Aucune taille disponible</li>
+                            {% endfor %}
+                        </ul>
                     </td>
-                    <td>{{ form_row(formEdit[product.id].price) }}</td>
-                    <td><img src="{{ asset('uploads/' ~ product.image) }}" alt="{{ product.name }}" width="50"></td>
-                    <td>{{ form_row(formEdit[product.id].isFeatured) }}</td>
-                    <td>{{ form_row(formEdit[product.id].stock) }}</td>
                     <td>
-                        {{ form_row(formEdit[product.id].submit) }}
-                        <a href="{{ path('admin_dashboard', {'delete_id': product.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">Supprimer</a>
-                        {{ form_end(formEdit[product.id]) }}
+                        <ul>
+                            {% for size in product.sizes %}
+                               <li> {{ size.stock }} en stock</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+
+                    <td>
+                    {% if product.image %}
+                        <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}" width="100">
+                    {% else %}
+                        <p>Aucune image</p>
+                    {% endif %}
+                </td>
+                    <td>
+                        <a href="{{ path('admin_dashboard', {'delete_id': product.id}) }}" class="btn btn-danger">Supprimer</a>
                     </td>
                 </tr>
+            {% else %}
+                <p>Aucun produit disponible.</p>
             {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Le prototype du formulaire pour les tailles
+            var prototype = '{{ form_widget(formAdd.sizes.vars.prototype) | raw }}';
+
+            // Le bouton pour ajouter une taille
+            var addSizeButton = document.getElementById('add-size');
+            var sizesContainer = document.getElementById('sizes-container');
+            
+            if (addSizeButton) {
+                addSizeButton.addEventListener('click', function() {
+                    console.log('Button clicked');  // Déboguer si le bouton est cliqué
+                    var index = sizesContainer.children.length; // Trouver le nombre d'éléments déjà présents
+
+                    // Remplacer le '__name__' dans le prototype par l'index du nouveau formulaire
+                    var newForm = prototype.replace(/__name__/g, index);
+                    console.log('New form generated: ', newForm);  // Déboguer le formulaire généré
+
+                    // Ajouter le nouveau formulaire au container
+                    var newDiv = document.createElement('div');
+                    newDiv.classList.add('form-group');
+                    newDiv.innerHTML = newForm;  // Insérer le HTML du nouveau formulaire
+                    sizesContainer.appendChild(newDiv);
+                });
+            } else {
+                console.error('Add size button not found!');
+            }
+        });
+    </script>
 {% endblock %}
